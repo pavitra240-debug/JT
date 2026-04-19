@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
@@ -7,12 +8,10 @@
   },
   "functions": {
     "api/[...path].js": {
-      "runtime": "nodejs20.x",
       "memory": 1024,
       "maxDuration": 30
     },
     "api/index.js": {
-      "runtime": "nodejs20.x",
       "memory": 1024,
       "maxDuration": 30
     }
