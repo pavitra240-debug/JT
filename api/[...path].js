@@ -5,5 +5,7 @@ export const config = {
 };
 
 export default async function handler(req, res) {
+  // Ensure the path includes /api prefix for Express app routing
+  req.url = `/api${req.url}`;
   return app(req, res);
 }
