@@ -11,9 +11,12 @@ import Contact from './pages/Contact';
 import Booking from './pages/Booking';
 import Packages from './pages/Packages';
 import Admin from './pages/Admin';
+import Setup from './pages/Setup';
 
 const ADMIN_LOGIN_ROUTE = '/jyothu-control-panel-login';
 const ADMIN_PANEL_ROUTE = '/jyothu-control-panel';
+const SETUP_ROUTE = '/setup-admin';
+
 
 
 function App() {
@@ -33,6 +36,7 @@ function App() {
             {/* Admin has its own full-screen layout (hidden route) */}
             <Route path={ADMIN_LOGIN_ROUTE} element={<Admin />} />
             <Route path={ADMIN_PANEL_ROUTE} element={<Admin />} />
+            <Route path={SETUP_ROUTE} element={<Setup />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Router>
