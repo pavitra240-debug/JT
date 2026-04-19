@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import { publicApi } from '@/api/backendClient';
 import PageHero from '../components/shared/PageHero';
 import SectionTitle from '../components/shared/SectionTitle';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 const HERO_IMG = "https://media.base44.com/images/public/69de0d5dc2462520482a09b4/5aea7312e_generated_1ccab50c.png";
 
@@ -40,6 +39,7 @@ export default function Contact() {
   const [form, setForm] = useState({ full_name: '', email: '', phone: '', subject: '', message: '' });
   const [loading, setLoading] = useState(false);
 
+  /** @param {React.FormEvent<HTMLFormElement>} e */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.full_name.trim() || !form.message.trim()) {
@@ -67,13 +67,13 @@ export default function Contact() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Form */}
             <div>
-              <SectionTitle title="Send a Message" />
+              <SectionTitle title="Send a Message" subtitle="" />
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <Label className="text-sm font-medium text-[#0F172A]">Full Name *</Label>
                   <Input
                     value={form.full_name}
-                    onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+                    onChange={/** @param {React.ChangeEvent<HTMLInputElement>} e */ (e) => setForm({ ...form, full_name: e.target.value })}
                     className="mt-1.5 h-12 border-slate-200 focus:border-amber-500 focus:ring-amber-500"
                     required
                   />
@@ -84,7 +84,7 @@ export default function Contact() {
                     <Input
                       type="email"
                       value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      onChange={/** @param {React.ChangeEvent<HTMLInputElement>} e */ (e) => setForm({ ...form, email: e.target.value })}
                       className="mt-1.5 h-12 border-slate-200 focus:border-amber-500 focus:ring-amber-500"
                     />
                   </div>
@@ -92,7 +92,7 @@ export default function Contact() {
                     <Label className="text-sm font-medium text-[#0F172A]">Phone</Label>
                     <Input
                       value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      onChange={/** @param {React.ChangeEvent<HTMLInputElement>} e */ (e) => setForm({ ...form, phone: e.target.value })}
                       className="mt-1.5 h-12 border-slate-200 focus:border-amber-500 focus:ring-amber-500"
                     />
                   </div>
@@ -101,7 +101,7 @@ export default function Contact() {
                   <Label className="text-sm font-medium text-[#0F172A]">Subject</Label>
                   <Input
                     value={form.subject}
-                    onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                    onChange={/** @param {React.ChangeEvent<HTMLInputElement>} e */ (e) => setForm({ ...form, subject: e.target.value })}
                     className="mt-1.5 h-12 border-slate-200 focus:border-amber-500 focus:ring-amber-500"
                   />
                 </div>
@@ -109,7 +109,7 @@ export default function Contact() {
                   <Label className="text-sm font-medium text-[#0F172A]">Message *</Label>
                   <Textarea
                     value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    onChange={/** @param {React.ChangeEvent<HTMLTextAreaElement>} e */ (e) => setForm({ ...form, message: e.target.value })}
                     rows={5}
                     className="mt-1.5 border-slate-200 focus:border-amber-500 focus:ring-amber-500"
                     required
@@ -128,7 +128,7 @@ export default function Contact() {
 
             {/* Contact Info */}
             <div>
-              <SectionTitle title="Contact Information" />
+              <SectionTitle title="Contact Information" subtitle="" />
               <div className="space-y-4 mb-8">
                 {CONTACT_INFO.map((info, idx) => (
                   <motion.div
@@ -197,31 +197,16 @@ export default function Contact() {
             </div>
           </div>
           <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-md h-[420px]">
-            <MapContainer
-              center={[15.3647, 75.1415]}
-              zoom={16}
-              scrollWheelZoom={false}
-              style={{ height: '100%', width: '100%' }}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <Marker position={[15.3647, 75.1415]}>
-                <Popup>
-                  <div style={{ fontFamily: 'sans-serif', padding: '4px' }}>
-                    <strong style={{ fontSize: '14px', color: '#0F172A' }}>📍 Jyothu Travels and Tourism</strong><br />
-                    <span style={{ color: '#64748b', fontSize: '12px' }}>
-                      #12, Shetter Layout, Linga Rajnagar<br />
-                      Near Global College, Hubli 580031
-                    </span><br />
-                    <a href="tel:9742100545" style={{ color: '#f59e0b', fontSize: '12px', fontWeight: '600' }}>
-                      📞 9742100545
-                    </a>
-                  </div>
-                </Popup>
-              </Marker>
-            </MapContainer>
+            <iframe
+              src="https://maps.google.com/maps?q=Jyothu+Travels+and+Tourism+Linga+Rajnagar+Hubli&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen={true}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Jyothu Travels and Tourism Location"
+            ></iframe>
           </div>
         </div>
       </section>

@@ -13,12 +13,18 @@ export default function PackageCard({ pkg }) {
       transition={{ duration: 0.5 }}
       className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group"
     >
-      <div className="relative overflow-hidden h-48">
-        <img
-          src={pkg.image_url}
-          alt={pkg.package_name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-        />
+      <div className="relative overflow-hidden h-48 bg-slate-100">
+        {pkg.image_url ? (
+          <img
+            src={pkg.image_url}
+            alt={pkg.package_name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-500 text-sm font-medium">
+            Image coming soon
+          </div>
+        )}
         <div className="absolute top-3 left-3 flex items-center gap-2">
           <span className="bg-amber-500 text-[#0F172A] text-xs font-bold px-3 py-1 rounded-full">
             {pkg.tour_type}
