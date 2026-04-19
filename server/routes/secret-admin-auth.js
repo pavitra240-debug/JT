@@ -61,6 +61,25 @@ adminAuthRouter.post('/logout', async (req, res) => {
   }
 });
 
+// Force logout all admins - useful if stuck
+adminAuthRouter.post('/force-logout-all', async (_req, res) => {
+  try {
+    await connectMongo();
+    const result = await Admin.updateMany(
+      { sessionActive: true },
+      { $set: { sessionActive: false, sessionJti: null } }
+    );
+    res.clearCookie(getCookieName(), { path: '/' });
+    return res.json({ 
+      ok: true,
+      message: 'All admin sessions cleared',
+      clearedCount: result.modifiedCount
+    });
+  } catch (_e) {
+    return res.status(500).json({ error: 'server_error' });
+  }
+});
+
 adminAuthRouter.get('/me', async (req, res) => {
   try {
     await connectMongo();
