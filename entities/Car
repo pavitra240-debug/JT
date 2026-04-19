@@ -1,0 +1,50 @@
+{
+  "name": "Car",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "description": "Category like Economy Sedan, Compact Sedan, Premium Sedan, Family MUV, SUV"
+    },
+    "vehicle_name": {
+      "type": "string",
+      "description": "Name of the vehicle"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Image URL of the vehicle"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Rating out of 5"
+    },
+    "local_drop_price": {
+      "type": "number",
+      "description": "Local drop price in Hubli"
+    },
+    "local_8h_nonac": {
+      "type": "number",
+      "description": "Local 8hr/80km Non-AC price"
+    },
+    "local_8h_ac": {
+      "type": "number",
+      "description": "Local 8hr/80km AC price"
+    },
+    "outstation_nonac_per_km": {
+      "type": "number",
+      "description": "Outstation Non-AC per km rate"
+    },
+    "outstation_ac_per_km": {
+      "type": "number",
+      "description": "Outstation AC per km rate"
+    },
+    "display_order": {
+      "type": "number",
+      "description": "Display order on website"
+    }
+  },
+  "required": [
+    "vehicle_name",
+    "category"
+  ]
+}

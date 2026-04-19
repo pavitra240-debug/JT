@@ -1,0 +1,30 @@
+{
+  "name": "ContactMessage",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Sender full name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Sender email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Sender phone"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Message subject"
+    },
+    "message": {
+      "type": "string",
+      "description": "Message body"
+    }
+  },
+  "required": [
+    "full_name",
+    "message"
+  ]
+}

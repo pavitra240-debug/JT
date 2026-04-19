@@ -1,0 +1,50 @@
+{
+  "name": "Bus",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "description": "Category like Tempo Traveller, Mini Bus"
+    },
+    "vehicle_name": {
+      "type": "string",
+      "description": "Name of the vehicle"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Image URL of the vehicle"
+    },
+    "seating_capacity": {
+      "type": "string",
+      "description": "Seating capacity e.g. 13+1 Seater"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Rating out of 5"
+    },
+    "local_price": {
+      "type": "number",
+      "description": "Local trip price"
+    },
+    "local_ac_price": {
+      "type": "number",
+      "description": "Local AC price"
+    },
+    "outstation_nonac_per_km": {
+      "type": "number",
+      "description": "Outstation Non-AC per km rate"
+    },
+    "outstation_ac_per_km": {
+      "type": "number",
+      "description": "Outstation AC per km rate"
+    },
+    "display_order": {
+      "type": "number",
+      "description": "Display order on website"
+    }
+  },
+  "required": [
+    "vehicle_name",
+    "category"
+  ]
+}

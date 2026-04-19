@@ -1,0 +1,54 @@
+{
+  "name": "Package",
+  "type": "object",
+  "properties": {
+    "package_name": {
+      "type": "string",
+      "description": "Name of the package"
+    },
+    "tour_type": {
+      "type": "string",
+      "description": "Type of tour e.g. Special Tour, Pilgrimage, Adventure"
+    },
+    "route": {
+      "type": "string",
+      "description": "Route/destination e.g. Hubli to Goa"
+    },
+    "duration": {
+      "type": "string",
+      "description": "Duration e.g. 2 Nights / 3 Days"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Image URL for the package"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Rating out of 5"
+    },
+    "pricing_rows": {
+      "type": "array",
+      "description": "Multiple vehicle-wise pricing rows",
+      "items": {
+        "type": "object",
+        "properties": {
+          "vehicle_type": {
+            "type": "string",
+            "description": "e.g. 4+1 Seater, 7+1 Seater (Innova)"
+          },
+          "price_range": {
+            "type": "string",
+            "description": "Price or range e.g. \u20b912,200/- \u2013 \u20b918,500/-"
+          }
+        }
+      }
+    },
+    "display_order": {
+      "type": "number",
+      "description": "Display order on website"
+    }
+  },
+  "required": [
+    "package_name"
+  ]
+}

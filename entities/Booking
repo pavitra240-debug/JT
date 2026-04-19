@@ -1,0 +1,72 @@
+{
+  "name": "Booking",
+  "type": "object",
+  "properties": {
+    "customer_name": {
+      "type": "string",
+      "description": "Customer full name"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Customer phone number"
+    },
+    "email": {
+      "type": "string",
+      "description": "Customer email"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "Car Rental",
+        "Bus/Tempo Traveller",
+        "Travel Package"
+      ],
+      "description": "Type of service"
+    },
+    "vehicle_or_package": {
+      "type": "string",
+      "description": "Selected car, bus, or package name"
+    },
+    "pickup_location": {
+      "type": "string",
+      "description": "Pickup location"
+    },
+    "drop_location": {
+      "type": "string",
+      "description": "Drop location"
+    },
+    "travel_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Travel date"
+    },
+    "travel_time": {
+      "type": "string",
+      "description": "Travel time"
+    },
+    "passengers": {
+      "type": "number",
+      "description": "Number of passengers"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Confirmed",
+        "Completed",
+        "Cancelled"
+      ],
+      "default": "Pending",
+      "description": "Booking status"
+    }
+  },
+  "required": [
+    "customer_name",
+    "phone",
+    "service_type"
+  ]
+}
