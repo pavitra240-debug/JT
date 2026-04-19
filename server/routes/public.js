@@ -1,10 +1,12 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import { connectMongo } from '../mongo.js';
 import { Car } from '../models/Car.js';
 import { Bus } from '../models/Bus.js';
 import { Package } from '../models/Package.js';
 import { Booking } from '../models/Booking.js';
 import { Message } from '../models/Message.js';
+import { Admin } from '../models/Admin.js';
 import { toBase44 } from '../utils.js';
 
 export const publicRouter = express.Router();
@@ -70,6 +72,49 @@ publicRouter.post('/messages', async (req, res) => {
     res.status(201).json({ message: toBase44(msg) });
   } catch (_e) {
     res.status(500).json({ error: 'server_error' });
+  }
+});
+
+// Emergency seed endpoint - only works with correct secret
+publicRouter.post('/seed-admin-emergency', async (req, res) => {
+  try {
+    const secret = req.headers['x-seed-secret'] || req.body?.secret || '';
+    const expectedSecret = process.env.ADMIN_SEED_SECRET || 'default-seed-key-change-me';
+    
+    if (secret !== expectedSecret) {
+      return res.status(403).json({ error: 'Unauthorized - invalid seed secret' });
+    }
+
+    await connectMongo();
+    
+    const email = (process.env.ADMIN_EMAIL || 'admin@jyothu.com').toLowerCase().trim();
+    const password = process.env.ADMIN_PASSWORD || 'admin@123';
+    const name = process.env.ADMIN_NAME || 'Admin';
+
+    const existing = await Admin.findOne({ email });
+    if (existing) {
+      return res.status(200).json({ message: 'Admin already exists', email });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    const admin = await Admin.create({
+      name,
+      email,
+      passwordHash,
+      sessionActive: false,
+      sessionJti: null,
+    });
+
+    return res.status(201).json({ 
+      message: 'Admin created successfully',
+      admin: {
+        id: String(admin._id),
+        name: admin.name,
+        email: admin.email,
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error?.message || 'server_error' });
   }
 });
 
