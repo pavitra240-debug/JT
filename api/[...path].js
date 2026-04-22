@@ -5,24 +5,21 @@ export const config = {
 };
 
 export default function handler(req, res) {
-  // Debug logging
-  console.log(`[API Handler] Method: ${req.method}, URL: ${req.url}, Path: ${req.path}`);
+  // Vercel forwards the request to this handler
+  // The req.url contains the full path (e.g., /api/secret-admin/login)
+  // Express app expects the full path with /api prefix
   
-  // Normalize the request URL to include /api prefix if not present
-  // Vercel may pass the full URL or a partial path
   const originalUrl = req.url || '';
   
+  // Ensure the URL has the /api prefix for Express routing
   if (!originalUrl.startsWith('/api')) {
     req.url = `/api${originalUrl}`;
-    console.log(`[API Handler] Adjusted URL from "${originalUrl}" to "${req.url}"`);
   }
   
-  // Invoke the Express app
-  // Express middleware chains work by calling app(req, res)
+  // Pass request to Express app
+  // Express will match routes and handle the response
   app(req, res);
-  
-  // Note: We don't return anything here because Express will
-  // call res.end() or res.send() which handles the response
 }
+
 
 
