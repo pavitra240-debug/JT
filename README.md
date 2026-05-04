@@ -10,7 +10,7 @@ Frontend UI is kept as-is. Base44 backend logic has been replaced with a custom 
 
 1. Install deps:
 
-```bash
+```bashkkkkkkkkkkkkkkkkkk
 npm install
 ```
 
