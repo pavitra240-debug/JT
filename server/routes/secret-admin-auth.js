@@ -12,8 +12,27 @@ adminAuthRouter.post('/login', async (req, res) => {
     const { email, password } = req.body || {};
     if (!email || !password) return res.status(400).json({ error: 'missing_fields' });
 
-    const admin = await Admin.findOne({ email: String(email).toLowerCase().trim() });
-    if (!admin) return res.status(401).json({ error: 'invalid_credentials' });
+    const normalizedEmail = String(email).toLowerCase().trim();
+    let admin = await Admin.findOne({ email: normalizedEmail });
+
+    if (!admin) {
+      const envAdminEmail = String(process.env.ADMIN_EMAIL || 'admin@jyothu.com').toLowerCase().trim();
+      const envAdminPassword = String(process.env.ADMIN_PASSWORD || 'admin@123');
+      const envAdminName = process.env.ADMIN_NAME || 'Admin';
+
+      if (normalizedEmail !== envAdminEmail || String(password) !== envAdminPassword) {
+        return res.status(401).json({ error: 'invalid_credentials' });
+      }
+
+      const passwordHash = await bcrypt.hash(String(password), 12);
+      admin = await Admin.create({
+        name: envAdminName,
+        email: envAdminEmail,
+        passwordHash,
+        sessionActive: false,
+        sessionJti: null,
+      });
+    }
 
     // Enforce: one login active until logout
     if (admin.sessionActive) {

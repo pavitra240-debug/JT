@@ -50,7 +50,7 @@ export default function AdminLogin() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="mt-1 h-11 bg-white/10 border-white/10 text-white placeholder:text-slate-500"
-                placeholder="admin@example.com"
+                placeholder="admin@jyothu.com"
                 type="email"
                 required
               />
