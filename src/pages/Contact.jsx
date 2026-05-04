@@ -187,7 +187,7 @@ export default function Contact() {
                 Get Directions →
               </a>
               <a
-                href="https://maps.google.com/?q=Jyothu+Travels+and+Tourism+Linga+Rajnagar+Hubli"
+                href="https://maps.google.com/?q=%2312,+Shetter+Layout,+Linga+Rajnagar,+Near+Global+College,+Hubli+580031"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 border border-amber-500 text-amber-600 hover:bg-amber-50 font-semibold text-sm px-4 py-2 rounded-full transition-colors"
@@ -198,7 +198,7 @@ export default function Contact() {
           </div>
           <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-md h-[420px]">
             <iframe
-              src="https://maps.google.com/maps?q=Jyothu+Travels+and+Tourism+Linga+Rajnagar+Hubli&output=embed"
+              src="https://maps.google.com/maps?q=%2312,+Shetter+Layout,+Linga+Rajnagar,+Near+Global+College,+Hubli+580031&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}

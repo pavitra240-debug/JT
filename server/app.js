@@ -44,6 +44,20 @@ app.get('/api/health', async (_req, res) => {
   }
 });
 
+// Debug endpoint for admin env vars
+app.get('/api/debug-admin-env', (_req, res) => {
+  res.json({
+    jwt_secret_loaded: !!process.env.JWT_SECRET,
+    jwt_secret_length: process.env.JWT_SECRET?.length || 0,
+    admin_email: process.env.ADMIN_EMAIL,
+    admin_password_set: !!process.env.ADMIN_PASSWORD,
+    admin_name: process.env.ADMIN_NAME,
+    mongodb_uri_set: !!process.env.MONGODB_URI,
+    node_env: process.env.NODE_ENV,
+    client_origin: process.env.CLIENT_ORIGIN,
+  });
+});
+
 app.use('/api/public', publicRouter);
 app.use('/api/secret-admin', adminAuthRouter);
 app.use('/api/secret-admin/cars', adminCarsRouter);

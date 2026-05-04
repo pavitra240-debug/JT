@@ -2,13 +2,24 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Lock, MapPin } from 'lucide-react';
+import { Lock, MapPin, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 
 export default function AdminLogin() {
   const { login, isLoadingAuth } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [showForceLogout, setShowForceLogout] = useState(false);
+
+  const handleForceLogout = async () => {
+    try {
+      await fetch('/api/secret-admin/force-logout-all', { method: 'POST', credentials: 'include' });
+      toast.success('All sessions cleared. Try logging in again.');
+      setShowForceLogout(false);
+    } catch (e) {
+      toast.error('Failed to clear sessions');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0F172A] flex items-center justify-center px-4">
@@ -31,6 +42,25 @@ export default function AdminLogin() {
             </p>
           </div>
 
+          {showForceLogout && (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="w-4 h-4 text-red-400" />
+                <p className="text-red-200 text-sm font-medium">Session Conflict</p>
+              </div>
+              <p className="text-red-300 text-xs mb-3">
+                Another admin session is active. Clear all sessions to continue.
+              </p>
+              <Button
+                onClick={handleForceLogout}
+                size="sm"
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                Clear All Sessions
+              </Button>
+            </div>
+          )}
+
           <form
             className="space-y-4 text-left"
             onSubmit={async (e) => {
@@ -39,8 +69,12 @@ export default function AdminLogin() {
                 await login({ email: form.email, password: form.password });
                 window.location.href = '/jyothu-control-panel';
               } catch (err) {
-                if (err?.message === 'already_logged_in') toast.error('Admin is already logged in. Please logout first.');
-                else toast.error('Login failed. Please check your credentials.');
+                if (err?.message === 'already_logged_in') {
+                  setShowForceLogout(true);
+                  toast.error('Admin is already logged in. Please clear sessions first.');
+                } else {
+                  toast.error('Login failed. Please check your credentials.');
+                }
               }
             }}
           >
