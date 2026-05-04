@@ -45,10 +45,12 @@ adminAuthRouter.post('/login', async (req, res) => {
       console.log('[admin-auth] Admin user created:', admin._id);
     }
 
-    // Enforce: one login active until logout
+    // Automatically clear any existing session before creating new one
     if (admin.sessionActive) {
-      console.error('[admin-auth] Admin already logged in');
-      return res.status(403).json({ error: 'already_logged_in' });
+      console.log('[admin-auth] Clearing existing session for admin:', admin.email);
+      admin.sessionActive = false;
+      admin.sessionJti = null;
+      await admin.save();
     }
 
     const ok = await bcrypt.compare(String(password), admin.passwordHash);
