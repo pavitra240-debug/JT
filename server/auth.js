@@ -7,7 +7,11 @@ const COOKIE_NAME = 'jyothu_admin_token';
 
 function getJwtSecret() {
   const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error('Missing JWT_SECRET');
+  if (!secret) {
+    console.error('[auth] CRITICAL: JWT_SECRET is not set!');
+    throw new Error('Missing JWT_SECRET');
+  }
+  console.log('[auth] JWT_SECRET loaded:', secret ? `${secret.substring(0, 10)}...` : 'undefined');
   return secret;
 }
 
