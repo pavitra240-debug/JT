@@ -179,7 +179,7 @@ export default function Contact() {
             </div>
             <div className="flex gap-3 ml-auto">
               <a
-                href="https://www.google.com/maps/dir/?api=1&destination=15.3647,75.1415"
+                href="https://www.google.com/maps/dir/?api=1&destination=%2312,+Shetter+Layout,+Linga+Rajnagar,+Near+Global+College,+Hubli+580031"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-[#0F172A] font-semibold text-sm px-4 py-2 rounded-full transition-colors"
