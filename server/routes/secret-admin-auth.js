@@ -18,24 +18,19 @@ adminAuthRouter.post('/login', async (req, res) => {
 
     const normalizedEmail = String(email).toLowerCase().trim();
     const normalizedPassword = String(password).trim();
-    let admin = await Admin.findOne({ email: normalizedEmail });
 
     const envAdminEmail = String(process.env.ADMIN_EMAIL || 'admin@jyothu.com').toLowerCase().trim();
     const envAdminPassword = String(process.env.ADMIN_PASSWORD || 'admin@123').trim();
     const envAdminName = process.env.ADMIN_NAME || 'Admin';
-    const matchesEnvCredentials = normalizedEmail === envAdminEmail && normalizedPassword === envAdminPassword;
 
+    if (normalizedEmail !== envAdminEmail || normalizedPassword !== envAdminPassword) {
+      console.error('[admin-auth] Invalid admin credentials');
+      return res.status(401).json({ error: 'invalid_credentials' });
+    }
+
+    let admin = await Admin.findOne({ email: normalizedEmail });
     if (!admin) {
-      console.log('[admin-auth] Admin not found. Checking env credentials...');
-      console.log('[admin-auth] Submitted email:', normalizedEmail);
-      console.log('[admin-auth] Env admin email:', envAdminEmail);
-
-      if (!matchesEnvCredentials) {
-        console.error('[admin-auth] Credentials do not match env or admin does not exist');
-        return res.status(401).json({ error: 'invalid_credentials' });
-      }
-
-      console.log('[admin-auth] Creating new admin user from env credentials...');
+      console.log('[admin-auth] Admin not found. Creating from env credentials...');
       const passwordHash = await bcrypt.hash(normalizedPassword, 12);
       admin = await Admin.create({
         name: envAdminName,
@@ -45,10 +40,10 @@ adminAuthRouter.post('/login', async (req, res) => {
         sessionJti: null,
       });
       console.log('[admin-auth] Admin user created:', admin._id);
-    } else if (matchesEnvCredentials) {
+    } else {
       const currentPasswordMatches = await bcrypt.compare(normalizedPassword, admin.passwordHash);
       if (!currentPasswordMatches) {
-        console.log('[admin-auth] Env credentials match but DB password hash differs; updating stored admin password hash.');
+        console.log('[admin-auth] Stored admin password differs from env; resetting stored password hash.');
         admin.passwordHash = await bcrypt.hash(normalizedPassword, 12);
         await admin.save();
       }
@@ -64,7 +59,7 @@ adminAuthRouter.post('/login', async (req, res) => {
 
     const ok = await bcrypt.compare(normalizedPassword, admin.passwordHash);
     if (!ok) {
-      console.error('[admin-auth] Password mismatch');
+      console.error('[admin-auth] Password mismatch after reset');
       return res.status(401).json({ error: 'invalid_credentials' });
     }
 
