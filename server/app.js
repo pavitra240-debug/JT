@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import mongoose from 'mongoose';
 import { connectMongo } from './mongo.js';
 import { publicRouter } from './routes/public.js';
 import { adminAuthRouter } from './routes/secret-admin-auth.js';
@@ -62,7 +63,7 @@ app.get('/api/debug-admin-env', (_req, res) => {
 app.get('/api/keep-db-alive', async (_req, res) => {
   try {
     await connectMongo();
-    const db = require('mongoose').connection.db;
+    const db = mongoose.connection.db;
     const result = await db.collection('admins').findOne({});
     res.json({ ok: true, message: 'Database pinged successfully' });
   } catch (e) {

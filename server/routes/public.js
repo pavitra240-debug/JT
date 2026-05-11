@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import { connectMongo } from '../mongo.js';
 import { Car } from '../models/Car.js';
 import { Bus } from '../models/Bus.js';
@@ -112,10 +113,11 @@ publicRouter.post('/seed-admin-emergency', async (req, res) => {
     }
 
     // Create new admin
+    const passwordHash = await bcrypt.hash(password, 12);
     const admin = await Admin.create({
       name,
       email,
-      passwordHash: password,
+      passwordHash,
     });
 
     return res.status(201).json({ 
