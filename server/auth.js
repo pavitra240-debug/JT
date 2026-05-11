@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { nanoid } from 'nanoid';
 import { connectMongo } from './mongo.js';
 import { Admin } from './models/Admin.js';
 
@@ -19,17 +18,13 @@ export function getCookieName() {
   return COOKIE_NAME;
 }
 
-export function signAdminToken({ adminId, email, jti }) {
+export function signAdminToken({ adminId, email }) {
   const secret = getJwtSecret();
   return jwt.sign(
-    { sub: adminId, email, role: 'admin', jti },
+    { sub: adminId, email, role: 'admin' },
     secret,
     { expiresIn: '7d' },
   );
-}
-
-export function newJti() {
-  return nanoid(24);
 }
 
 export function cookieOptions() {
@@ -57,11 +52,6 @@ export async function requireAdmin(req, res, next) {
 
     const admin = await Admin.findById(payload.sub).lean();
     if (!admin) return res.status(401).json({ error: 'unauthorized' });
-
-    // Enforce one active session until logout: token must match stored jti and sessionActive must be true
-    if (!admin.sessionActive || !admin.sessionJti || admin.sessionJti !== payload.jti) {
-      return res.status(401).json({ error: 'unauthorized' });
-    }
 
     req.admin = { id: String(admin._id), email: admin.email, name: admin.name, role: 'admin' };
     next();

@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import { connectMongo } from '../mongo.js';
 import { Admin } from '../models/Admin.js';
-import { cookieOptions, getCookieName, newJti, signAdminToken } from '../auth.js';
+import { cookieOptions, getCookieName, signAdminToken } from '../auth.js';
 
 export const adminAuthRouter = express.Router();
 
@@ -36,39 +36,11 @@ adminAuthRouter.post('/login', async (req, res) => {
         name: envAdminName,
         email: envAdminEmail,
         passwordHash,
-        sessionActive: false,
-        sessionJti: null,
       });
       console.log('[admin-auth] Admin user created:', admin._id);
-    } else {
-      const currentPasswordMatches = await bcrypt.compare(normalizedPassword, admin.passwordHash);
-      if (!currentPasswordMatches) {
-        console.log('[admin-auth] Stored admin password differs from env; resetting stored password hash.');
-        admin.passwordHash = await bcrypt.hash(normalizedPassword, 12);
-        await admin.save();
-      }
     }
 
-    // Automatically clear any existing session before creating new one
-    if (admin.sessionActive) {
-      console.log('[admin-auth] Clearing existing session for admin:', admin.email);
-      admin.sessionActive = false;
-      admin.sessionJti = null;
-      await admin.save();
-    }
-
-    const ok = await bcrypt.compare(normalizedPassword, admin.passwordHash);
-    if (!ok) {
-      console.error('[admin-auth] Password mismatch after reset');
-      return res.status(401).json({ error: 'invalid_credentials' });
-    }
-
-    const jti = newJti();
-    admin.sessionActive = true;
-    admin.sessionJti = jti;
-    await admin.save();
-
-    const token = signAdminToken({ adminId: String(admin._id), email: admin.email, jti });
+    const token = signAdminToken({ adminId: String(admin._id), email: admin.email });
     res.cookie(getCookieName(), token, cookieOptions());
 
     console.log('[admin-auth] Login successful for:', admin.email);
@@ -81,42 +53,8 @@ adminAuthRouter.post('/login', async (req, res) => {
 
 adminAuthRouter.post('/logout', async (req, res) => {
   try {
-    await connectMongo();
-    // Best effort: clear active session for whichever admin currently has this token
-    const token = req.cookies?.[getCookieName()];
-    if (token) {
-      // validate token signature but ignore failures
-      try {
-        const jwt = (await import('jsonwebtoken')).default;
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        if (payload?.sub) {
-          await Admin.updateOne({ _id: payload.sub }, { $set: { sessionActive: false, sessionJti: null } });
-        }
-      } catch {
-        // ignore
-      }
-    }
     res.clearCookie(getCookieName(), { path: '/' });
     return res.json({ ok: true });
-  } catch (_e) {
-    return res.status(500).json({ error: 'server_error' });
-  }
-});
-
-// Force logout all admins - useful if stuck
-adminAuthRouter.post('/force-logout-all', async (_req, res) => {
-  try {
-    await connectMongo();
-    const result = await Admin.updateMany(
-      { sessionActive: true },
-      { $set: { sessionActive: false, sessionJti: null } }
-    );
-    res.clearCookie(getCookieName(), { path: '/' });
-    return res.json({ 
-      ok: true,
-      message: 'All admin sessions cleared',
-      clearedCount: result.modifiedCount
-    });
   } catch (_e) {
     return res.status(500).json({ error: 'server_error' });
   }
@@ -144,11 +82,6 @@ adminAuthRouter.get('/me', async (req, res) => {
     const admin = await Admin.findById(payload.sub).lean();
     if (!admin) {
       console.error('[admin-auth] Admin not found in database');
-      return res.status(401).json({ error: 'unauthorized' });
-    }
-    
-    if (!admin.sessionActive || !admin.sessionJti || admin.sessionJti !== payload.jti) {
-      console.error('[admin-auth] Session mismatch or inactive');
       return res.status(401).json({ error: 'unauthorized' });
     }
 

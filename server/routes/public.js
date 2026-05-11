@@ -1,5 +1,4 @@
 import express from 'express';
-import bcrypt from 'bcryptjs';
 import { connectMongo } from '../mongo.js';
 import { Car } from '../models/Car.js';
 import { Bus } from '../models/Bus.js';
@@ -84,9 +83,18 @@ publicRouter.post('/messages', async (req, res) => {
   }
 });
 
-// Emergency seed endpoint - creates admin with no authentication required initially
+// Emergency seed endpoint - creates admin with special header authentication
 publicRouter.post('/seed-admin-emergency', async (req, res) => {
   try {
+    // Protect with a special header that only the setup page knows
+    const emergencyKey = req.headers['x-emergency-setup-key'];
+    const expectedKey = process.env.EMERGENCY_SETUP_KEY || 'emergency-setup-key-change-in-production';
+    
+    if (emergencyKey !== expectedKey) {
+      console.error('[seed-admin] Unauthorized emergency setup attempt');
+      return res.status(403).json({ error: 'forbidden' });
+    }
+
     await connectMongo();
     
     const email = (process.env.ADMIN_EMAIL || 'admin@jyothu.com').toLowerCase().trim();
@@ -99,18 +107,15 @@ publicRouter.post('/seed-admin-emergency', async (req, res) => {
       return res.status(200).json({ 
         message: 'Admin already exists',
         email,
-        note: 'If admin is logged in, use /api/public/logout-all-sessions to clear sessions'
+        note: 'Use admin login to access the panel'
       });
     }
 
     // Create new admin
-    const passwordHash = await bcrypt.hash(password, 12);
     const admin = await Admin.create({
       name,
       email,
-      passwordHash,
-      sessionActive: false,
-      sessionJti: null,
+      passwordHash: password,
     });
 
     return res.status(201).json({ 
@@ -121,23 +126,6 @@ publicRouter.post('/seed-admin-emergency', async (req, res) => {
         email: admin.email,
       },
       nextStep: 'Go to /jyothu-control-panel-login to login'
-    });
-  } catch (error) {
-    res.status(500).json({ error: error?.message || 'server_error' });
-  }
-});
-
-// Clear all active sessions - use this if admin is stuck logged in
-publicRouter.post('/logout-all-sessions', async (_req, res) => {
-  try {
-    await connectMongo();
-    const result = await Admin.updateMany(
-      { sessionActive: true },
-      { $set: { sessionActive: false, sessionJti: null } }
-    );
-    return res.json({ 
-      message: 'All sessions cleared',
-      clearedCount: result.modifiedCount
     });
   } catch (error) {
     res.status(500).json({ error: error?.message || 'server_error' });

@@ -12,6 +12,7 @@
     "seed:buses": "node scripts/seed-buses.js",
     "seed:packages": "node scripts/seed-packages.js",
     "import-data": "node scripts/import-data.js",
+    "keep-db-alive": "node scripts/keep-db-alive.js",
     "build": "vite build",
     "lint": "eslint . --quiet",
     "lint:fix": "eslint . --fix",

@@ -58,6 +58,18 @@ app.get('/api/debug-admin-env', (_req, res) => {
   });
 });
 
+// Keep-alive endpoint for MongoDB cron job (prevents auto-pause on MongoDB Atlas)
+app.get('/api/keep-db-alive', async (_req, res) => {
+  try {
+    await connectMongo();
+    const db = require('mongoose').connection.db;
+    const result = await db.collection('admins').findOne({});
+    res.json({ ok: true, message: 'Database pinged successfully' });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: 'db_unreachable', message: e?.message });
+  }
+});
+
 app.use('/api/public', publicRouter);
 app.use('/api/secret-admin', adminAuthRouter);
 app.use('/api/secret-admin/cars', adminCarsRouter);

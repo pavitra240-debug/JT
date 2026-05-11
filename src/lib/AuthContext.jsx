@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [authError, setAuthError] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     checkAdminSession();
@@ -20,12 +21,14 @@ export const AuthProvider = ({ children }) => {
       const { user: me } = await adminAuthApi.me();
       setUser(me);
       setIsAuthenticated(true);
-      setIsLoadingAuth(false);
+      setAuthError(null);
     } catch (error) {
       setUser(null);
       setIsAuthenticated(false);
       setAuthError(null);
+    } finally {
       setIsLoadingAuth(false);
+      setAuthChecked(true);
     }
   }, []);
 
@@ -66,7 +69,8 @@ export const AuthProvider = ({ children }) => {
       authError,
       logout,
       login,
-      checkAdminSession
+      checkAdminSession,
+      authChecked
     }}>
       {children}
     </AuthContext.Provider>

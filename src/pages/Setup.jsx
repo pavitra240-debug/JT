@@ -49,7 +49,10 @@ export default function Setup() {
     try {
       const res = await fetch('/api/public/seed-admin-emergency', { 
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-emergency-setup-key': 'emergency-setup-key-change-in-production'
+        }
       });
       const data = await res.json();
       if (res.ok || data.admin || data.message?.includes('exists')) {

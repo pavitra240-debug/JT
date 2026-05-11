@@ -4,7 +4,7 @@ import AdminLogin from '../components/admin/AdminLogin';
 import AdminDashboard from '../components/admin/AdminDashboard';
 
 export default function Admin() {
-  const { user, isAuthenticated, isLoadingAuth } = useAuth();
+  const { user, isAuthenticated, isLoadingAuth, authError } = useAuth();
 
   if (isLoadingAuth) {
     return (
@@ -14,8 +14,8 @@ export default function Admin() {
     );
   }
 
-  // Only allow admin role
-  if (!isAuthenticated || user?.role !== 'admin') {
+  // If auth check failed or user is not authenticated, show login
+  if (authError || !isAuthenticated || user?.role !== 'admin') {
     return <AdminLogin />;
   }
 
