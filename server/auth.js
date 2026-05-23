@@ -40,20 +40,16 @@ export function cookieOptions() {
 
 export async function requireAdmin(req, res, next) {
   try {
-    await connectMongo();
     const token = req.cookies?.[COOKIE_NAME];
     if (!token) return res.status(401).json({ error: 'unauthorized' });
 
     const secret = getJwtSecret();
     const payload = jwt.verify(token, secret);
-    if (!payload?.sub || payload?.role !== 'admin') {
+    if (payload?.role !== 'admin') {
       return res.status(401).json({ error: 'unauthorized' });
     }
 
-    const admin = await Admin.findById(payload.sub).lean();
-    if (!admin) return res.status(401).json({ error: 'unauthorized' });
-
-    req.admin = { id: String(admin._id), email: admin.email, name: admin.name, role: 'admin' };
+    req.admin = { id: 'admin', email: payload.email, name: payload.name || 'Admin', role: 'admin' };
     next();
   } catch (_e) {
     return res.status(401).json({ error: 'unauthorized' });

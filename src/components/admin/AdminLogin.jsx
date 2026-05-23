@@ -33,6 +33,7 @@ export default function AdminLogin() {
 
           <form
             className="space-y-4 text-left"
+            autoComplete="off"
             onSubmit={async (e) => {
               e.preventDefault();
               try {
@@ -43,13 +44,17 @@ export default function AdminLogin() {
               }
             }}
           >
+            <input type="text" name="fake-email" autoComplete="username" className="hidden" />
+            <input type="password" name="fake-password" autoComplete="current-password" className="hidden" />
             <div>
               <Label className="text-xs font-medium text-slate-200">Email</Label>
               <Input
+                name="admin-email"
+                autoComplete="off"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="mt-1 h-11 bg-white/10 border-white/10 text-white placeholder:text-slate-500"
-                placeholder="admin@jyothu.com"
+                placeholder="Enter admin email"
                 type="email"
                 required
               />
@@ -57,6 +62,8 @@ export default function AdminLogin() {
             <div>
               <Label className="text-xs font-medium text-slate-200">Password</Label>
               <Input
+                name="admin-password"
+                autoComplete="new-password"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 className="mt-1 h-11 bg-white/10 border-white/10 text-white placeholder:text-slate-500"

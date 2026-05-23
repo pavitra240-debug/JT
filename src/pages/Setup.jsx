@@ -56,7 +56,7 @@ export default function Setup() {
       });
       const data = await res.json();
       if (res.ok || data.admin || data.message?.includes('exists')) {
-        setMessage(`✅ Admin ready! Email: ${data.admin?.email || data.email || 'admin@jyothu.com'}`);
+        setMessage(`✅ Admin ready! Email: ${data.admin?.email || data.email || 'configured admin email'}`);
         setStep('done');
       } else {
         setError('❌ Failed to create admin: ' + (data.error || 'Unknown error'));
@@ -108,7 +108,7 @@ export default function Setup() {
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
               <p className="text-green-900 font-semibold mb-2">{message}</p>
               <p className="text-sm text-green-700 mb-4">
-                Default password: <code className="bg-white px-2 py-1 rounded">admin@123</code>
+                Use the admin credentials configured in your environment variables.
               </p>
             </div>
             <Button 

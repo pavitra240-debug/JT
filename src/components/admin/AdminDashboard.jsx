@@ -64,19 +64,27 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="lg:hidden p-2 text-slate-600 hover:text-slate-900"
-          >
-            <BarChart2 className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="font-lexend text-xl font-bold text-[#0F172A]">
-              {TABS.find(t => t.id === activeTab)?.label}
-            </h1>
+        <header className="bg-white border-b border-slate-200 px-6 py-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between sticky top-0 z-20">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden p-2 text-slate-600 hover:text-slate-900"
+            >
+              <BarChart2 className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="font-lexend text-xl font-bold text-[#0F172A]">
+                {TABS.find(t => t.id === activeTab)?.label}
+              </h1>
+              <p className="text-slate-500 text-sm">Admin Dashboard</p>
+            </div>
           </div>
-          <div className="text-xs text-slate-400">Admin</div>
+          <button
+            onClick={() => logout('/')}
+            className="ml-auto inline-flex items-center justify-center rounded-2xl bg-red-600 px-5 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-sm shadow-red-500/20 transition hover:bg-red-700"
+          >
+            Sign Out
+          </button>
         </header>
 
         <main className="flex-1 p-6 overflow-auto">

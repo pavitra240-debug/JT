@@ -98,9 +98,17 @@ publicRouter.post('/seed-admin-emergency', async (req, res) => {
 
     await connectMongo();
     
-    const email = (process.env.ADMIN_EMAIL || 'admin@jyothu.com').toLowerCase().trim();
-    const password = process.env.ADMIN_PASSWORD || 'admin@123';
+    const envAdminEmail = process.env.ADMIN_EMAIL;
+    const envAdminPassword = process.env.ADMIN_PASSWORD;
     const name = process.env.ADMIN_NAME || 'Admin';
+
+    if (!envAdminEmail || !envAdminPassword) {
+      console.error('[seed-admin] ADMIN_EMAIL or ADMIN_PASSWORD is not configured');
+      return res.status(500).json({ error: 'server_error', message: 'Admin email and password must be configured in environment variables' });
+    }
+
+    const email = String(envAdminEmail).toLowerCase().trim();
+    const password = String(envAdminPassword).trim();
 
     // Check if admin already exists
     const existing = await Admin.findOne({ email });
